@@ -1,9 +1,18 @@
 Rails.application.routes.draw do
   resources :posts
   get 'home/index'
-  devise_for :users
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  devise_for :users,  controllers: { registrations: 'registrations' },
+                      path: '',
+                      path_names: { sign_in: 'login',
+                                    sign_out: 'logout',
+                                    sign_up: 'registrate' }
 
-  # Defines the root path route ("/")
-  root "posts#index"
+  # Rutas de autenticación
+  authenticated :user do
+    root 'posts#index', as: :authenticated_root
+  end
+
+  unauthenticated do
+    root 'home#index'
+  end
 end
